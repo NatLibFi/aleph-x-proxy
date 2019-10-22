@@ -1,6 +1,8 @@
-# Melinda OAI-PMH provider [![Build Status](https://travis-ci.org/NatLibFi/melinda-oai-pmh-provider.svg)](https://travis-ci.org/NatLibFi/melinda-oai-pmh-provider) [![Test Coverage](https://codeclimate.com/github/NatLibFi/melinda-oai-pmh-provider/badges/coverage.svg)](https://codeclimate.com/github/NatLibFi/melinda-oai-pmh-provider/coverage)
+# A proxy server for enhancing Aleph's X-service [![Build Status](https://travis-ci.org/NatLibFi/aleph-x-proxy.svg)](https://travis-ci.org/NatLibFi/aleph-x-proxy) [![Test Coverage](https://codeclimate.com/github/NatLibFi/aleph-x-proxy/badges/coverage.svg)](https://codeclimate.com/github/NatLibFi/aleph-x-proxy/coverage)
 
-Melinda OAI-PMH provider
+A proxy server for enhancing [Aleph's X-service](https://developers.exlibrisgroup.com/aleph/apis/aleph-x-services/).
+
+Updates indexing priority for records already in queue when they are updated by the X-service.
 
 ## License and copyright
 

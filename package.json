@@ -1,6 +1,6 @@
 {
 	"name": "@natlibfi/aleph-x-proxy",
-	"description": "",
+	"description": "A proxy server for Aleph's X-service",
 	"author": {
 		"name": "The National Library of Finland"
 	},
