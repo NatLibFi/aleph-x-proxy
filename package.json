@@ -1,0 +1,104 @@
+{
+	"name": "@natlibfi/aleph-x-proxy",
+	"description": "",
+	"author": {
+		"name": "The National Library of Finland"
+	},
+	"keywords": [],
+	"homepage": "https://github.com/natlibfi/aleph-x-proxy",
+	"bugs": {
+		"url": "https://github.com/natlibfi/aleph-x-proxy/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:natlibfi/aleph-x-proxy.git"
+	},
+	"license": "Apache-2.0",
+	"version": "1.0.0",
+	"main": "./dist/index.js",
+	"engines": {
+		"node": ">=10"
+	},
+	"scripts": {
+		"start": "node dist/index.js",
+		"check-deps": "npm-check || exit 0",
+		"lint": "eslint src",
+		"lint:dev": "eslint --fix src",
+		"test:base": "cross-env NODE_ENV=test mocha --require @babel/register",
+		"test": "npm run lint && npm run test:base -- src/*.spec.js",
+		"test:dev": "npm run lint:dev && npm run test:base -- src/*.spec.js",
+		"build": "babel src --source-maps --delete-dir-on-start --out-dir=dist",
+		"build:dev": "npm run build && npm run check-deps",
+		"watch:test": "cross-env NODE_ENV=test nodemon --watch src --exec 'npm run test:dev'",
+		"watch:dev": "cross-env DEBUG=1 nodemon --watch src --exec 'babel-node ./src/index.js'"
+	},
+	"dependencies": {
+		"@natlibfi/melinda-commons": "^7.0.1",
+		"express": "^4.17.1",
+		"http-proxy-middleware": "^0.20.0",
+		"http-status": "^1.4.0",
+		"moment": "^2.24.0",
+		"oracledb": "^4.0.1",
+		"xml2js": "^0.4.22"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.6.0",
+		"@babel/core": "^7.6.0",
+		"@babel/node": "^7.6.1",
+		"@babel/preset-env": "^7.6.0",
+		"@babel/register": "^7.6.0",
+		"@natlibfi/fixura": "^1.0.0",
+		"babel-eslint": "^10.0.1",
+		"babel-plugin-rewire": "^1.2.0",
+		"chai": "^4.2.0",
+		"chai-http": "^4.3.0",
+		"cross-env": "^5.2.1",
+		"eslint": "^6.3.0",
+		"eslint-config-xo": ">=0.26.0 <1.0.0",
+		"eslint-plugin-import": "^2.13.0",
+		"jsonpath": "^1.0.2",
+		"mocha": "^6.0.0",
+		"nock": "^11.3.4",
+		"nodemon": "^1.19.2",
+		"npm-check": "^5.7.1",
+		"sinon": "^7.4.2",
+		"sinon-chai": "^3.3.0"
+	},
+	"eslintConfig": {
+		"parser": "babel-eslint",
+		"plugins": [
+			"import"
+		],
+		"extends": [
+			"xo",
+			"plugin:import/errors"
+		],
+		"rules": {
+			"prefer-arrow-callback": [
+				"error"
+			]
+		},
+		"env": {
+			"mocha": true
+		}
+	},
+	"babel": {
+		"presets": [
+			[
+				"@babel/preset-env",
+				{
+					"targets": {
+						"node": "10"
+					}
+				}
+			]
+		],
+		"env": {
+			"test": {
+				"plugins": [
+					"rewire"
+				]
+			}
+		}
+	}
+}
