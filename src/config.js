@@ -19,7 +19,7 @@ import {Utils} from '@natlibfi/melinda-commons';
 const {readEnvironmentVariable} = Utils;
 
 export const alephLibrary = readEnvironmentVariable('ALEPH_LIBRARY');
-export const alephXserviceUrl = readEnvironmentVariable('ALEPH_X_SERVICE_URL');
+export const alephXServiceUrl = readEnvironmentVariable('ALEPH_X_SERVICE_URL');
 
 export const indexingPriority = readEnvironmentVariable('INDEXING_PRIORITY', {defaultValue: '1998'});
 

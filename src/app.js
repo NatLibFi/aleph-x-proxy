@@ -15,15 +15,14 @@
 */
 
 import express from 'express';
-import createProxy from 'http-proxy-middleware';
 import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
 import {Utils} from '@natlibfi/melinda-commons';
-import createResponseHandler from './response';
+import createMiddleware from './middleware';
 
 export default async function ({
 	enableProxy, httpPort,
-	alephLibrary, alephXserviceUrl, indexingPriority,
+	alephLibrary, alephXServiceUrl, indexingPriority,
 	oracleUsername, oraclePassword, oracleConnectString
 }) {
 	const {createLogger, createExpressLogger} = Utils;
@@ -71,11 +70,7 @@ export default async function ({
 			msg: '{{req.ip}} HTTP {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms'
 		}));
 
-		app.use('/', createProxy({
-			target: alephXserviceUrl,
-			changeOrigin: true,
-			onProxyRes: createResponseHandler({pool, alephLibrary, indexingPriority})
-		}));
+		app.use(createMiddleware({pool, alephLibrary, indexingPriority, alephXServiceUrl}));
 
 		app.use(handleError);
 

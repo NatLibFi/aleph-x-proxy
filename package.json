@@ -1,6 +1,6 @@
 {
 	"name": "@natlibfi/aleph-x-proxy",
-	"description": "A proxy server for Aleph's X-service",
+	"description": "A proxy server for enhancing Aleph's X-service",
 	"author": {
 		"name": "The National Library of Finland"
 	},
@@ -35,8 +35,9 @@
 	"dependencies": {
 		"@natlibfi/melinda-commons": "^7.0.1",
 		"express": "^4.17.1",
-		"http-proxy-middleware": "^0.20.0",
+		"http-proxy": "^1.18.0",
 		"http-status": "^1.4.0",
+		"into-stream": "^5.1.1",
 		"moment": "^2.24.0",
 		"oracledb": "^4.0.1",
 		"xml2js": "^0.4.22"
