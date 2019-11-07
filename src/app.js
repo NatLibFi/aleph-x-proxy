@@ -79,6 +79,7 @@ export default async function ({
 
 		function formatMessage(req, res) {
 			const newUrl = format();
+			console.log(newUrl);
 			return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
 
 			function format() {
@@ -86,6 +87,7 @@ export default async function ({
 				const params = new URLSearchParams(query);
 				params.delete('staff_user');
 				params.delete('staff_pass');
+				console.log(params);
 				return `${path}?${params.toString()}`;
 			}
 		}
