@@ -78,6 +78,7 @@ export default async function ({
 		return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
 
 		function formatMessage(req, res) {
+			console.log(req.url);
 			const newUrl = format();
 			console.log(newUrl);
 			return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
