@@ -78,17 +78,16 @@ export default async function ({
 		return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
 
 		function formatMessage(req, res) {
-			console.log(req.url);
-			const newUrl = format();
-			console.log(newUrl);
+			const newUrl = format();;
 			return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
 
 			function format() {
 				const [path, query] = req.url.split(/\?/);
 				const params = new URLSearchParams(query);
+
 				params.delete('staff_user');
 				params.delete('staff_pass');
-				console.log(params);
+				
 				return `${path}?${params.toString()}`;
 			}
 		}
