@@ -18,6 +18,7 @@ import express from 'express';
 import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
 import {Utils} from '@natlibfi/melinda-commons';
+import {URLSearchParams} from 'url';
 import createMiddleware from './middleware';
 
 export default async function ({
@@ -67,7 +68,7 @@ export default async function ({
 		}
 
 		app.use(createExpressLogger({
-			msg: '{{req.ip}} HTTP {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms'
+			msg: formatMessage
 		}));
 
 		app.use(createMiddleware({pool, alephLibrary, indexingPriority, alephXServiceUrl}));
@@ -75,6 +76,21 @@ export default async function ({
 		app.use(handleError);
 
 		return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
+
+		function formatMessage(req, res) {
+			const newUrl = format();
+			return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
+
+			function format() {
+				const [path, query] = req.url.split(/\?/);
+				const params = new URLSearchParams(query);
+
+				params.delete('staff_user');
+				params.delete('staff_pass');
+
+				return `${path}?${params.toString()}`;
+			}
+		}
 
 		async function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
 			const {
