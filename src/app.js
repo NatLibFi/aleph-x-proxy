@@ -78,7 +78,7 @@ export default async function ({
 		return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
 
 		function formatMessage(req, res) {
-			const newUrl = format();;
+			const newUrl = format();
 			return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
 
 			function format() {
@@ -87,7 +87,7 @@ export default async function ({
 
 				params.delete('staff_user');
 				params.delete('staff_pass');
-				
+
 				return `${path}?${params.toString()}`;
 			}
 		}
