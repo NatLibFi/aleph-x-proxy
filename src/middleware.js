@@ -36,8 +36,17 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 	return async (req, res) => {
 		const reqPayload = await readPayload(req);
 
-		req.isRecordUpdate = /op=update_doc/.test(reqPayload) && /doc_number=0{9}/.test(reqPayload) === false;
-
+		// req.isRecordUpdate = /op=update_doc/.test(reqPayload) && /doc_number=0{9}/.test(reqPayload) === false;
+		
+		req.isRecordUpdate = (/op=update_doc/.test(reqPayload) || /op=update-doc/.test(reqPayload) ) && 
+                                     (/doc_number=0{9}/.test(reqPayload) === false) && 
+                                     (/doc_num=0{9}/.test(reqPayload) === false) && 
+                                     (/rec_num= /.test(reqPayload) === false); 
+		
+		logger.log('debug', req.isRecordUpdate ?
+			   `Request is record update.` :
+			   `Request is not record update.`);
+		
 		proxy.web(req, res, {
 			target: alephXServiceUrl,
 			changeOrigin: true,
