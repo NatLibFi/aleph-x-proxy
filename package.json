@@ -35,7 +35,7 @@
 	"dependencies": {
 		"@natlibfi/melinda-commons": "^7.0.1",
 		"express": "^4.17.1",
-		"http-proxy": "^1.18.0",
+		"http-proxy": "^1.18.1",
 		"http-status": "^1.4.0",
 		"into-stream": "^5.1.1",
 		"moment": "^2.24.0",
