@@ -62,8 +62,10 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
 		async function handle() {
 			const payload = await parseXML(resPayload);
-			const resPayloadToLog = resPayload.replace(/\n|\r/g, ' ');
-			logger.log('debug', resPayloadToLog);
+			//
+			// const resPayloadToLog = resPayload.replace(/\n|\r/g, ' ');
+			// logger.log('debug', resPayloadToLog);
+			logger.log('debug', JSON.stringify(payload));
 			const id = getId();
 			logger.log('debug', 'ID: ' + id);
 
