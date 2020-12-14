@@ -74,15 +74,17 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 			function getId() {
 				const pattern = /Document: ([0-9]{9}) was updated successfully\.$/;
 
-				if ('update-doc' in payload) {
-					if ('update-doc-alma' in payload) {
-						const replyRec = payload['reply-rec'];
-						logger.log('debug', JSON.stringify(replyRec));
-						const almaId = payload['reply-rec'];
-						logger.log('debug', 'ID from update-doc-alma: ' + almaId);
-						return almaId ? almaId : undefined;
-					}
+				if ('update-doc-alma' in payload) {
+					logger.log('debug', 'Found update-doc-alma');
+					const replyRec = payload['reply-rec'];
+					logger.log('debug', JSON.stringify(replyRec));
+					const almaId = payload['reply-rec'];
+					logger.log('debug', 'ID from update-doc-alma: ' + almaId);
+					return almaId ? almaId : undefined;
+				}
 
+				if ('update-doc' in payload) {
+					logger.log('debug', 'Found update-doc');
 					const message = payload['update-doc'].error.find(m => pattern.test(m));
 					return message ? pattern.exec(message)[1] : undefined;
 				}
