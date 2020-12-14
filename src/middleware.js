@@ -76,7 +76,9 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
 				if ('update-doc' in payload) {
 					if ('update-doc-alma' in payload) {
-						const almaId = payload['reply-rec'].value();
+						const replyRec = payload['reply-rec'];
+						logger.log('debug', JSON.stringify(replyRec));
+						const almaId = payload['reply-rec'];
 						logger.log('debug', 'ID from update-doc-alma: ' + almaId);
 						return almaId ? almaId : undefined;
 					}
