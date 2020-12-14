@@ -72,6 +72,11 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 				const pattern = /Document: ([0-9]{9}) was updated successfully\.$/;
 
 				if ('update-doc' in payload) {
+					if ('update-doc-alma' in payload) {
+						const almaId = payload['reply-rec'].value();
+						logger.log('debug', 'ID from update-doc-alma: ' + almaId);
+					}
+
 					const message = payload['update-doc'].error.find(m => pattern.test(m));
 					return message ? pattern.exec(message)[1] : undefined;
 				}
