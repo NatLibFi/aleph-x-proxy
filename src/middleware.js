@@ -62,7 +62,8 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
 		async function handle() {
 			const payload = await parseXML(resPayload);
-			logger.log('debug', resPayload);
+			const resPayloadToLog = resPayload.replace(/\n|\r/g, ' ');
+			logger.log('debug', resPayloadToLog);
 			const id = getId();
 			logger.log('debug', 'ID: ' + id);
 
@@ -75,6 +76,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 					if ('update-doc-alma' in payload) {
 						const almaId = payload['reply-rec'].value();
 						logger.log('debug', 'ID from update-doc-alma: ' + almaId);
+						return almaId ? almaId : undefined;
 					}
 
 					const message = payload['update-doc'].error.find(m => pattern.test(m));
