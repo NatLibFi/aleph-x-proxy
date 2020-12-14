@@ -56,12 +56,15 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 		const resPayload = await readPayload(proxyRes);
 
 		if (proxyRes.statusCode === HttpStatus.OK && resPayload && req.isRecordUpdate) {
+			logger.log('debug', 'Handling response');
 			return handle();
 		}
 
 		async function handle() {
 			const payload = await parseXML(resPayload);
+			logger.log('debug', resPayload);
 			const id = getId();
+			logger.log('debug', 'ID: ' + id);
 
 			return id ? updateIndexing() : undefined;
 
