@@ -78,7 +78,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 					logger.log('debug', 'Found update-doc-alma');
 					const replyRec = payload['update-doc-alma']['reply-rec'];
 					logger.log('debug', JSON.stringify(replyRec));
-					const almaId = payload['update-doc-alma']['reply-rec'];
+					const almaId = payload['update-doc-alma']['reply-rec'][0];
 					logger.log('debug', 'ID from update-doc-alma: ' + almaId);
 					return almaId ? almaId : undefined;
 				}
