@@ -62,13 +62,8 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
 		async function handle() {
 			const payload = await parseXML(resPayload);
-			//
-			// const resPayloadToLog = resPayload.replace(/\n|\r/g, ' ');
-			// logger.log('debug', resPayloadToLog);
 			logger.log('debug', JSON.stringify(payload));
 			const id = getId();
-			logger.log('debug', 'ID: ' + id);
-
 			return id ? updateIndexing() : undefined;
 
 			function getId() {
@@ -76,10 +71,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
 				if ('update-doc-alma' in payload) {
 					logger.log('debug', 'Found update-doc-alma');
-					const replyRec = payload['update-doc-alma']['reply-rec'];
-					logger.log('debug', JSON.stringify(replyRec));
 					const almaId = payload['update-doc-alma']['reply-rec'][0];
-					logger.log('debug', 'ID from update-doc-alma: ' + almaId);
 					return almaId ? almaId : undefined;
 				}
 
