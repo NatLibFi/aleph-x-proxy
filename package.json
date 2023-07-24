@@ -33,64 +33,44 @@
 		"watch:dev": "cross-env DEBUG=1 nodemon --watch src --exec 'babel-node ./src/index.js'"
 	},
 	"dependencies": {
-		"@natlibfi/melinda-commons": "^7.0.1",
-		"express": "^4.17.1",
-		"http-proxy": "^1.18.0",
-		"http-status": "^1.4.0",
-		"into-stream": "^5.1.1",
-		"moment": "^2.24.0",
+		"@natlibfi/melinda-commons": "^13.0.4",
+		"express": "^4.18.2",
+		"http-proxy": "^1.18.1",
+		"http-status": "^1.6.2",
+		"into-stream": "^8.0.0",
+		"moment": "^2.29.4",
 		"oracledb": "^4.0.1",
-		"xml2js": "^0.4.22"
+		"xml2js": "^0.6.0"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.6.0",
-		"@babel/core": "^7.6.0",
-		"@babel/node": "^7.6.1",
-		"@babel/preset-env": "^7.6.0",
-		"@babel/register": "^7.6.0",
-		"@natlibfi/fixura": "^1.0.0",
-		"babel-eslint": "^10.0.1",
+		"@babel/cli": "^7.22.9",
+		"@babel/core": "^7.22.9",
+		"@babel/node": "^7.22.6",
+		"@babel/preset-env": "^7.22.9",
+		"@babel/register": "^7.22.5",
+		"@natlibfi/eslint-config-melinda-backend": "^3.0.0",
+		"@natlibfi/fixura": "^3.0.0",
 		"babel-plugin-rewire": "^1.2.0",
-		"chai": "^4.2.0",
-		"chai-http": "^4.3.0",
-		"cross-env": "^5.2.1",
-		"eslint": "^6.3.0",
-		"eslint-config-xo": ">=0.26.0 <1.0.0",
-		"eslint-plugin-import": "^2.13.0",
-		"jsonpath": "^1.0.2",
-		"mocha": "^6.0.0",
+		"chai": "^4.3.7",
+		"chai-http": "^4.4.0",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.45.0",
+		"jsonpath": "^1.1.1",
+		"mocha": "^10.2.0",
 		"nock": "^11.3.4",
-		"nodemon": "^1.19.2",
-		"npm-check": "^5.7.1",
+		"nodemon": "^3.0.1",
 		"sinon": "^7.4.2",
 		"sinon-chai": "^3.3.0"
 	},
 	"eslintConfig": {
-		"parser": "babel-eslint",
-		"plugins": [
-			"import"
-		],
-		"extends": [
-			"xo",
-			"plugin:import/errors"
-		],
-		"rules": {
-			"prefer-arrow-callback": [
-				"error"
-			]
-		},
-		"env": {
-			"mocha": true
-		}
+		"extends": "@natlibfi/melinda-backend"
 	},
 	"babel": {
 		"presets": [
 			[
 				"@babel/preset-env",
 				{
-					"targets": {
-						"node": "10"
-					}
+					"targets": "maintained node versions"
 				}
 			]
 		],

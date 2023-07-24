@@ -22,90 +22,90 @@ import {URLSearchParams} from 'url';
 import createMiddleware from './middleware';
 
 export default async function ({
-	enableProxy, httpPort,
-	alephLibrary, alephXServiceUrl, indexingPriority,
-	oracleUsername, oraclePassword, oracleConnectString
+  enableProxy, httpPort,
+  alephLibrary, alephXServiceUrl, indexingPriority,
+  oracleUsername, oraclePassword, oracleConnectString
 }) {
-	const {createLogger, createExpressLogger} = Utils;
-	const logger = createLogger();
+  const {createLogger, createExpressLogger} = Utils;
+  const logger = createLogger();
 
-	const pool = await initOracle();
-	const server = initExpress();
+  const pool = await initOracle();
+  const server = initExpress();
 
-	server.on('close', async () => {
-		await pool.close(0);
-	});
+  server.on('close', async () => {
+    await pool.close(0);
+  });
 
-	return server;
+  return server;
 
-	async function initOracle() {
-		setOracleOptions();
+  async function initOracle() {
+    setOracleOptions();
 
-		logger.log('debug', 'Establishing connection to database...');
+    logger.log('debug', 'Establishing connection to database...');
 
-		const pool = await oracledb.createPool({
-			user: oracleUsername, password: oraclePassword,
-			connectString: oracleConnectString
-		});
+    const pool = await oracledb.createPool({
+      user: oracleUsername, password: oraclePassword,
+      connectString: oracleConnectString
+    });
 
-		logger.log('debug', 'Connected to database!');
+    logger.log('debug', 'Connected to database!');
 
-		return pool;
+    return pool;
 
-		function setOracleOptions() {
-			oracledb.outFormat = oracledb.OBJECT;
-			oracledb.poolTimeout = 20;
-			oracledb.events = false;
-			oracledb.poolPingInterval = 10;
-		}
-	}
+    function setOracleOptions() {
+      oracledb.outFormat = oracledb.OBJECT; // eslint-disable-line functional/immutable-data
+      oracledb.poolTimeout = 20; // eslint-disable-line functional/immutable-data
+      oracledb.events = false; // eslint-disable-line functional/immutable-data
+      oracledb.poolPingInterval = 10; // eslint-disable-line functional/immutable-data
+    }
+  }
 
-	function initExpress() {
-		const app = express();
+  function initExpress() {
+    const app = express();
 
-		if (enableProxy) {
-			app.enable('trust proxy', true);
-		}
+    if (enableProxy) { // eslint-disable-line functional/no-conditional-statements
+      app.enable('trust proxy', true);
+    }
 
-		app.use(createExpressLogger({
-			msg: formatMessage
-		}));
+    app.use(createExpressLogger({
+      msg: formatMessage
+    }));
 
-		app.use(createMiddleware({pool, alephLibrary, indexingPriority, alephXServiceUrl}));
+    app.use(createMiddleware({pool, alephLibrary, indexingPriority, alephXServiceUrl}));
 
-		app.use(handleError);
+    app.use(handleError);
 
-		return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
+    return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
 
-		function formatMessage(req, res) {
-			const newUrl = format();
-			return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
+    function formatMessage(req, res) {
+      const newUrl = format();
+      return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
 
-			function format() {
-				const [path, query] = req.url.split(/\?/);
-				const params = new URLSearchParams(query);
+      function format() {
+        const [path, query] = req.url.split(/\?/u);
+        const params = new URLSearchParams(query);
 
-				params.delete('staff_user');
-				params.delete('staff_pass');
+        params.delete('staff_user');
+        params.delete('staff_pass');
 
-				return `${path}?${params.toString()}`;
-			}
-		}
+        return `${path}?${params.toString()}`;
+      }
+    }
 
-		async function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
-			const {
-				INTERNAL_SERVER_ERROR,
-				REQUEST_TIMEOUT
-			} = HttpStatus;
+    function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
+      const {
+        INTERNAL_SERVER_ERROR,
+        REQUEST_TIMEOUT
+      } = HttpStatus;
 
-			// Certain Oracle errors don't matter if the request was closed by the client
-			if (err.message && err.message.startsWith('NJS-018:') && req.aborted) {
-				res.sendStatus(REQUEST_TIMEOUT);
-				return;
-			}
+      // Certain Oracle errors don't matter if the request was closed by the client
+      if (err.message && err.message.startsWith('NJS-018:') && req.aborted) {
+        res.sendStatus(REQUEST_TIMEOUT);
+        return;
+      }
 
-			res.sendStatus(INTERNAL_SERVER_ERROR);
-			throw err;
-		}
-	}
+      res.sendStatus(INTERNAL_SERVER_ERROR);
+      throw err;
+    }
+  }
 }
