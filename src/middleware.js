@@ -15,17 +15,14 @@
 */
 
 import HttpStatus from 'http-status';
-import stringToStream from 'into-stream';
 import {parseString as parseXMLOrig} from 'xml2js';
 import {createProxyServer} from 'http-proxy';
 import moment from 'moment';
 import {promisify} from 'util';
-import {Utils} from '@natlibfi/melinda-commons';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 
 export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   const INDEXING_SEQUENCE_FORMAT = 'YYYYMMDDHHmmssS';
-
-  const {createLogger} = Utils;
   const parseXML = promisify(parseXMLOrig);
   const logger = createLogger();
   const proxy = createProxyServer();
@@ -46,10 +43,11 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
       ? 'Request is record update.'
       : 'Request is not record update.');
 
+    const stringToStream = (reqPayload) => import('into-stream').then(({default: toStream}) => toStream(reqPayload));
     proxy.web(req, res, {
       target: alephXServiceUrl,
       changeOrigin: true,
-      buffer: stringToStream(reqPayload)
+      buffer: stringToStream()
     });
   };
 

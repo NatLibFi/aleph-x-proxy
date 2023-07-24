@@ -17,7 +17,7 @@
 import express from 'express';
 import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
-import {Utils} from '@natlibfi/melinda-commons';
+import {createExpressLogger, createLogger} from '@natlibfi/melinda-backend-commons';
 import {URLSearchParams} from 'url';
 import createMiddleware from './middleware';
 
@@ -26,7 +26,6 @@ export default async function ({
   alephLibrary, alephXServiceUrl, indexingPriority,
   oracleUsername, oraclePassword, oracleConnectString
 }) {
-  const {createLogger, createExpressLogger} = Utils;
   const logger = createLogger();
 
   const pool = await initOracle();
