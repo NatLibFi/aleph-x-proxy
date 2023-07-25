@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:18
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["/usr/local/bin/node", "index.js"]
 WORKDIR /home/node
