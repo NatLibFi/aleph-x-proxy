@@ -20,37 +20,37 @@ import * as params from './config';
 run();
 
 async function run() {
-	let server;
+  let server; // eslint-disable-line functional/no-let
 
-	registerInterruptionHandlers();
-	server = await startApp(params);
+  registerInterruptionHandlers();
+  server = await startApp(params); // eslint-disable-line
 
-	function registerInterruptionHandlers() {
-		process.on('SIGTERM', handleSignal);
-		process.on('SIGINT', handleSignal);
+  function registerInterruptionHandlers() {
+    process.on('SIGTERM', handleSignal);
+    process.on('SIGINT', handleSignal);
 
-		process.on('uncaughtException', ({stack}) => {
-			handleTermination({code: 1, message: stack});
-		});
+    process.on('uncaughtException', ({stack}) => {
+      handleTermination({code: 1, message: stack});
+    });
 
-		process.on('unhandledRejection', ({stack}) => {
-			handleTermination({code: 1, message: stack});
-		});
+    process.on('unhandledRejection', ({stack}) => {
+      handleTermination({code: 1, message: stack});
+    });
 
-		function handleSignal(signal) {
-			handleTermination({code: 1, message: `Received ${signal}`});
-		}
+    function handleSignal(signal) {
+      handleTermination({code: 1, message: `Received ${signal}`});
+    }
 
-		function handleTermination({code = 0, message}) {
-			if (server) {
-				server.close();
-			}
+    function handleTermination({code = 0, message}) {
+      if (server) { // eslint-disable-line
+        server.close();
+      }
 
-			if (message) {
-				console.error(message);
-			}
+      if (message) { // eslint-disable-line
+        console.error(message); // eslint-disable-line
+      }
 
-			process.exit(code);
-		}
-	}
+      process.exit(code); // eslint-disable-line
+    }
+  }
 }

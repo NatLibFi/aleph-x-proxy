@@ -1,4 +1,11 @@
-FROM node:10
+FROM alpine:3.8 as instantClientLoader
+CMD ["/instantClientScript.sh"]
+
+ARG VERSION
+COPY instantClientScript.sh /instantClientScript.sh
+COPY instantclient_${VERSION} /instantclient
+
+FROM node:18
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["/usr/local/bin/node", "index.js"]
 WORKDIR /home/node
@@ -9,17 +16,18 @@ ENV ORACLE_WALLET_DIRECTORY /home/node/wallet
 ENV ORACLE_CONNECT_TIMEOUT 10
 
 COPY --chown=node:node . build
+COPY --from=instantClientLoader /instantclient /home/node/build/
 
 RUN node -v
-RUN apt-get update && apt-get install -y build-essential git sudo libaio1 tzdata \
-  && mkdir /data && chown node:node /data \  
-  && sudo -u node \
+RUN apt-get update && apt-get install -y build-essential git sudo libaio1 tzdata
+RUN mkdir /data && chown node:node /data
+RUN sudo -u node \
     OCI_LIB_DIR=/home/node/build/instantclient \
     OCI_INC_DIR=/home/node/build/instantclient/sdk/include \
-    sh -c 'cd build && npm install && npm run build' \
-  && sudo -u node cp -r build/*.template build/entrypoint.sh build/instantclient build/package.json build/dist/* . \
-  && sudo -u node rm -rf build \
-  && sudo -u node \
+    sh -c 'cd build && npm install && npm run build'
+RUN sudo -u node cp -r build/*.template build/entrypoint.sh build/instantclient build/package.json build/dist/* .
+RUN sudo -u node rm -rf build
+RUN sudo -u node \
     OCI_LIB_DIR=/home/node/instantclient \
     OCI_INC_DIR=/home/node/instantclient/sdk/include \
     npm install --prod \
