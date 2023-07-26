@@ -17,7 +17,7 @@ RUN sudo -u node \
     OCI_LIB_DIR=/home/node/build/instantclient \
     OCI_INC_DIR=/home/node/build/instantclient/sdk/include \
     sh -c 'cd build && npm install && npm run build'
-RUN sudo -u node cp -r build/*.template build/entrypoint.sh build/instantclient build/package.json build/dist/* .
+RUN sudo -u node cp -r /home/node/build/*.template /home/node/build/entrypoint.sh /home/node/build/instantclient /home/node/build/package.json /home/node/build/dist/* .
 RUN sudo -u node rm -rf build
 RUN sudo -u node \
     OCI_LIB_DIR=/home/node/instantclient \
