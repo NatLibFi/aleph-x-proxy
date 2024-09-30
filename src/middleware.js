@@ -63,7 +63,9 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
     async function handle() {
       const payload = await parseXML(resPayload);
+      logger.debug(`Got payload: ${JSON.stringify(resPayload)}`);
       const id = getId();
+      logger.debug(`Got ID: ${id}`);
 
       return id ? updateIndexing() : undefined;
 
@@ -79,11 +81,13 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
       async function updateIndexing() {
         // eslint-disable-next-line functional/no-let
         let connection;
+        logger.debug(`Update indexing.`);
 
         try {
           logger.log('info', `Updating indexing for record ${id}`);
 
           connection = await pool.getConnection();
+          logger.debug(`Did we get a connection?`);
 
           const query = `UPDATE ${alephLibrary}.z07 SET z07_sequence = :value WHERE z07_rec_key = :id`;
           const args = {id, value: generateSequence()};
