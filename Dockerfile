@@ -2,10 +2,10 @@ FROM node:20-alpine as builder
 WORKDIR /home/node
 COPY . .
 
-#RUN sh -c 'npm i --ignore-scripts && npm run build && rm -rf node_modules'
-RUN sh -c 'npm run build'
-RUN sh -c 'npm i --ignore-scripts && rm -rf node_modules'
-RUN sh -c 'npm i --ignore-scripts --production'
+RUN sh -c 'npm i --ignore-scripts && npm run build && rm -rf node_modules'
+#RUN sh -c 'npm i --ignore-scripts && rm -rf node_modules'
+#RUN sh -c 'npm run build'
+#RUN sh -c 'npm i --ignore-scripts --production'
 
 FROM node:20-alpine
 CMD ["/usr/local/bin/node", "index.js"]
