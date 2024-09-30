@@ -42,11 +42,14 @@ export default async function ({
     setOracleOptions();
 
     logger.log('debug', 'Establishing connection to database...');
+    logger.debug(`Oracle connectsting: ${oracleConnectString}`);
 
     const pool = await oracledb.createPool({
       user: oracleUsername, password: oraclePassword,
       connectString: oracleConnectString
     });
+
+    await testConnection(pool);
 
     logger.log('debug', 'Connected to database!');
     logger.debug(`Pool debug: `);
@@ -116,4 +119,14 @@ export default async function ({
       throw err;
     }
   }
+
+  async function testConnection(pool) {
+    const connection = await pool.getConnection();
+    const result = await connection.execute(`
+       SELECT z00_rec_key
+       FROM fin01.z00
+       WHERE z00_rec_key = '000000001'`);
+    logger.debug(result.rows);
+  }
+
 }

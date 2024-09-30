@@ -85,7 +85,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
         try {
           logger.log('info', `Updating indexing for record ${id}`);
-
+          logger.debug(pool === undefined ? `pool is undefined` : `pool exists`);
           connection = await pool.getConnection();
           logger.debug(`Did we get a connection?`);
 
