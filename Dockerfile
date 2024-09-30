@@ -11,7 +11,6 @@ FROM node:20-alpine
 CMD ["/usr/local/bin/node", "index.js"]
 WORKDIR /home/node
 #USER node
-
 #Update
 RUN apk update && apk upgrade
 
@@ -20,6 +19,7 @@ RUN apk add --no-cache tzdata
 ENV TZ=Europe/Helsinki
 
 COPY --from=builder /home/node/index.js .
+COPY --from=builder /home/node/dist .
 COPY --from=builder /home/node/bin bin
 COPY --from=builder /home/node/lib lib
 COPY --from=builder /home/node/node_modules node_modules
