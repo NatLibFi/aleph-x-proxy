@@ -17,7 +17,7 @@
 import express from 'express';
 import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
-import {Utils} from '@natlibfi/melinda-commons';
+import {createLogger, createExpressLogger} from '@natlibfi/melinda-backend-commons';
 import {URLSearchParams} from 'url';
 import createMiddleware from './middleware';
 
@@ -26,7 +26,6 @@ export default async function ({
   alephLibrary, alephXServiceUrl, indexingPriority,
   oracleUsername, oraclePassword, oracleConnectString
 }) {
-  const {createLogger, createExpressLogger} = Utils;
   const logger = createLogger();
 
   const pool = await initOracle();
@@ -84,7 +83,7 @@ export default async function ({
 
     function formatMessage(req, res) {
       const newUrl = format();
-      return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
+      return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode} ${res.responseTime}ms`;
 
       function format() {
         const [path, query] = req.url.split(/\?/u);

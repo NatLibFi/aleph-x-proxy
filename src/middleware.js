@@ -20,12 +20,11 @@ import {parseString as parseXMLOrig} from 'xml2js';
 import {createProxyServer} from 'http-proxy';
 import moment from 'moment';
 import {promisify} from 'util';
-import {Utils} from '@natlibfi/melinda-commons';
+import {createLogger} from '@natlibfi/melinda-backend-commons';
 
 export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   const INDEXING_SEQUENCE_FORMAT = 'YYYYMMDDHHmmssS';
 
-  const {createLogger} = Utils;
   const parseXML = promisify(parseXMLOrig);
   const logger = createLogger();
   const proxy = createProxyServer();
