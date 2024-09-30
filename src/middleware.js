@@ -100,6 +100,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
             ? `Indexing priority updated successfully for record ${id}`
             : `Record ${id} already indexed`);
         } finally {
+          logger.debug(`Closing connection.`);
           await connection.close();
         }
 
@@ -115,6 +116,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   // eslint-disable-next-line require-await
   async function readPayload(msg) {
     return new Promise((resolve, reject) => {
+      logger.debug(`ReadPayload`);
       const buffer = [];
 
       msg
