@@ -121,10 +121,11 @@ export default async function ({
     }
   }
 
-  function testConnection(pool) {
-    const connection = pool.getConnection();
-    logger.debug(connection.isHealthy());
-    connection.close();
+  async function testConnection(pool) {
+    const connection = await pool.getConnection();
+    //logger.debug(connection.isHealthy());
+    logger.debug(`We tested a connection:`);
+    await connection.close();
   }
 
 }
