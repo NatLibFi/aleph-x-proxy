@@ -23,97 +23,97 @@ import {promisify} from 'util';
 import {Utils} from '@natlibfi/melinda-commons';
 
 export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
-	const INDEXING_SEQUENCE_FORMAT = 'YYYYMMDDHHmmssS';
+  const INDEXING_SEQUENCE_FORMAT = 'YYYYMMDDHHmmssS';
 
-	const {createLogger} = Utils;
-	const parseXML = promisify(parseXMLOrig);
-	const logger = createLogger();
-	const proxy = createProxyServer();
+  const {createLogger} = Utils;
+  const parseXML = promisify(parseXMLOrig);
+  const logger = createLogger();
+  const proxy = createProxyServer();
 
-	proxy.on('proxyRes', handleResponse);
-	proxy.on('error', (err, _, next) => next(err));
+  proxy.on('proxyRes', handleResponse);
+  proxy.on('error', (err, _, next) => next(err));
 
-	return async (req, res) => {
-		const reqPayload = await readPayload(req);
+  return async (req, res) => {
+    const reqPayload = await readPayload(req);
 
-		req.isRecordUpdate = (/op=update_doc/.test(reqPayload) || /op=update-doc/.test(reqPayload)) &&
-							(/doc_number=0{9}/.test(reqPayload) === false) &&
-							(/doc_num=0{9}/.test(reqPayload) === false) &&
-							(/rec_num= /.test(reqPayload) === false);
+    req.isRecordUpdate = (/op=update_doc/.test(reqPayload) || /op=update-doc/.test(reqPayload)) &&
+              (/doc_number=0{9}/.test(reqPayload) === false) &&
+              (/doc_num=0{9}/.test(reqPayload) === false) &&
+              (/rec_num= /.test(reqPayload) === false);
 
-		logger.log('debug', req.isRecordUpdate ?
-			'Request is record update.' :
-			'Request is not record update.');
+    logger.log('debug', req.isRecordUpdate ?
+      'Request is record update.' :
+      'Request is not record update.');
 
-		proxy.web(req, res, {
-			target: alephXServiceUrl,
-			changeOrigin: true,
-			buffer: stringToStream(reqPayload)
-		});
-	};
+    proxy.web(req, res, {
+      target: alephXServiceUrl,
+      changeOrigin: true,
+      buffer: stringToStream(reqPayload)
+    });
+  };
 
-	async function handleResponse(proxyRes, req) {
-		const resPayload = await readPayload(proxyRes);
+  async function handleResponse(proxyRes, req) {
+    const resPayload = await readPayload(proxyRes);
 
-		if (proxyRes.statusCode === HttpStatus.OK && resPayload && req.isRecordUpdate) {
-			return handle();
-		}
+    if (proxyRes.statusCode === HttpStatus.OK && resPayload && req.isRecordUpdate) {
+      return handle();
+    }
 
-		async function handle() {
-			const payload = await parseXML(resPayload);
-			const id = getId();
+    async function handle() {
+      const payload = await parseXML(resPayload);
+      const id = getId();
 
-			return id ? updateIndexing() : undefined;
+      return id ? updateIndexing() : undefined;
 
-			function getId() {
-				const pattern = /Document: ([0-9]{9}) was updated successfully\.$/;
+      function getId() {
+        const pattern = /Document: ([0-9]{9}) was updated successfully\.$/;
 
-				if ('update-doc' in payload) {
-					const message = payload['update-doc'].error.find(m => pattern.test(m));
-					return message ? pattern.exec(message)[1] : undefined;
-				}
-			}
+        if ('update-doc' in payload) {
+          const message = payload['update-doc'].error.find(m => pattern.test(m));
+          return message ? pattern.exec(message)[1] : undefined;
+        }
+      }
 
-			async function updateIndexing() {
-				let connection;
+      async function updateIndexing() {
+        let connection;
 
-				try {
-					logger.log('info', `Updating indexing for record ${id}`);
+        try {
+          logger.log('info', `Updating indexing for record ${id}`);
 
-					connection = await pool.getConnection();
+          connection = await pool.getConnection();
 
-					const query = `UPDATE ${alephLibrary}.z07 SET z07_sequence = :value WHERE z07_rec_key = :id`;
-					const args = {id, value: generateSequence()};
+          const query = `UPDATE ${alephLibrary}.z07 SET z07_sequence = :value WHERE z07_rec_key = :id`;
+          const args = {id, value: generateSequence()};
 
-					logger.log('debug', `Executing query: '${query}' with args: ${JSON.stringify(args)}`);
+          logger.log('debug', `Executing query: '${query}' with args: ${JSON.stringify(args)}`);
 
-					const {rowsAffected} = await connection.execute(query, args, {autoCommit: true});
+          const {rowsAffected} = await connection.execute(query, args, {autoCommit: true});
 
-					logger.log('info', rowsAffected ?
-						`Indexing priority updated successfully for record ${id}` :
-						`Record ${id} already indexed`
-					);
-				} finally {
-					await connection.close();
-				}
+          logger.log('info', rowsAffected ?
+            `Indexing priority updated successfully for record ${id}` :
+            `Record ${id} already indexed`
+          );
+        } finally {
+          await connection.close();
+        }
 
-				function generateSequence() {
-					const time = moment();
-					time.set('year', indexingPriority);
-					return time.format(INDEXING_SEQUENCE_FORMAT);
-				}
-			}
-		}
-	}
+        function generateSequence() {
+          const time = moment();
+          time.set('year', indexingPriority);
+          return time.format(INDEXING_SEQUENCE_FORMAT);
+        }
+      }
+    }
+  }
 
-	async function readPayload(msg) {
-		return new Promise((resolve, reject) => {
-			const buffer = [];
+  async function readPayload(msg) {
+    return new Promise((resolve, reject) => {
+      const buffer = [];
 
-			msg
-				.on('error', reject)
-				.on('data', chunk => buffer.push(chunk))
-				.on('end', () => resolve(buffer.join('')));
-		});
-	}
+      msg
+        .on('error', reject)
+        .on('data', chunk => buffer.push(chunk))
+        .on('end', () => resolve(buffer.join('')));
+    });
+  }
 };
