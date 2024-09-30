@@ -53,9 +53,13 @@ export default async function ({
     return pool;
 
     function setOracleOptions() {
+      // eslint-disable-next-line functional/immutable-data
       oracledb.outFormat = oracledb.OBJECT;
+      // eslint-disable-next-line functional/immutable-data
       oracledb.poolTimeout = 20;
+      // eslint-disable-next-line functional/immutable-data
       oracledb.events = false;
+      // eslint-disable-next-line functional/immutable-data
       oracledb.poolPingInterval = 10;
     }
   }
@@ -63,6 +67,7 @@ export default async function ({
   function initExpress() {
     const app = express();
 
+    // eslint-disable-next-line functional/no-conditional-statements
     if (enableProxy) {
       app.enable('trust proxy', true);
     }
@@ -82,7 +87,7 @@ export default async function ({
       return `${req.ip} HTTP ${req.method} ${newUrl} - ${res.statusCode}} ${res.responseTime}ms`;
 
       function format() {
-        const [path, query] = req.url.split(/\?/);
+        const [path, query] = req.url.split(/\?/u);
         const params = new URLSearchParams(query);
 
         params.delete('staff_user');
@@ -92,6 +97,7 @@ export default async function ({
       }
     }
 
+    // eslint-disable-next-line require-await
     async function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
       const {
         INTERNAL_SERVER_ERROR,

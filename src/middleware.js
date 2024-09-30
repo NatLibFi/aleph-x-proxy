@@ -36,14 +36,17 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   return async (req, res) => {
     const reqPayload = await readPayload(req);
 
-    req.isRecordUpdate = (/op=update_doc/.test(reqPayload) || /op=update-doc/.test(reqPayload)) &&
-              (/doc_number=0{9}/.test(reqPayload) === false) &&
-              (/doc_num=0{9}/.test(reqPayload) === false) &&
-              (/rec_num= /.test(reqPayload) === false);
+    // eslint-disable-next-line functional/immutable-data, require-atomic-updates
+    req.isRecordUpdate = ((/op=update_doc/u).test(reqPayload) || (/op=update-doc/u).test(reqPayload)) &&
+    //  require op=update_doc or op=update-doc, but
+    // ignore all zeroes or empty doc_number/doc_num/rec_num - these are creates!
+                         (/doc_number=0{9}/u).test(reqPayload) === false &&
+                         (/doc_num=0{9}/u).test(reqPayload) === false &&
+                         (/rec_num= /u).test(reqPayload) === false;
 
-    logger.log('debug', req.isRecordUpdate ?
-      'Request is record update.' :
-      'Request is not record update.');
+    logger.log('debug', req.isRecordUpdate
+      ? 'Request is record update.'
+      : 'Request is not record update.');
 
     proxy.web(req, res, {
       target: alephXServiceUrl,
@@ -66,7 +69,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
       return id ? updateIndexing() : undefined;
 
       function getId() {
-        const pattern = /Document: ([0-9]{9}) was updated successfully\.$/;
+        const pattern = /Document: (?<sys>[0-9]{9}) was updated successfully\.$/u;
 
         if ('update-doc' in payload) {
           const message = payload['update-doc'].error.find(m => pattern.test(m));
@@ -75,6 +78,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
       }
 
       async function updateIndexing() {
+        // eslint-disable-next-line functional/no-let
         let connection;
 
         try {
@@ -89,10 +93,9 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
           const {rowsAffected} = await connection.execute(query, args, {autoCommit: true});
 
-          logger.log('info', rowsAffected ?
-            `Indexing priority updated successfully for record ${id}` :
-            `Record ${id} already indexed`
-          );
+          logger.log('info', rowsAffected
+            ? `Indexing priority updated successfully for record ${id}`
+            : `Record ${id} already indexed`);
         } finally {
           await connection.close();
         }
@@ -106,12 +109,14 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
     }
   }
 
+  // eslint-disable-next-line require-await
   async function readPayload(msg) {
     return new Promise((resolve, reject) => {
       const buffer = [];
 
       msg
         .on('error', reject)
+        // eslint-disable-next-line functional/immutable-data
         .on('data', chunk => buffer.push(chunk))
         .on('end', () => resolve(buffer.join('')));
     });
