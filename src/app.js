@@ -32,6 +32,7 @@ export default async function ({
   const server = initExpress();
 
   server.on('close', async () => {
+    logger.debug(`Server close, closing pool.`);
     await pool.close(0);
   });
 
@@ -48,6 +49,7 @@ export default async function ({
     });
 
     logger.log('debug', 'Connected to database!');
+    logger.debug(`Pool debug: `);
 
     return pool;
 
@@ -105,10 +107,11 @@ export default async function ({
 
       // Certain Oracle errors don't matter if the request was closed by the client
       if (err.message && err.message.startsWith('NJS-018:') && req.aborted) {
+        logger.debug(`Request was closed by client, let's not mind closed connection`);
         res.sendStatus(REQUEST_TIMEOUT);
         return;
       }
-
+      logger.debug(`We got an error!`);
       res.sendStatus(INTERNAL_SERVER_ERROR);
       throw err;
     }

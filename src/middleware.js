@@ -91,6 +91,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
           const query = `UPDATE ${alephLibrary}.z07 SET z07_sequence = :value WHERE z07_rec_key = :id`;
           const args = {id, value: generateSequence()};
+          logger.debug(`We got args: ${JSON.stringify(args)}`);
 
           logger.log('debug', `Executing query: '${query}' with args: ${JSON.stringify(args)}`);
 
