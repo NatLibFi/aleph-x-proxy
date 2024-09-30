@@ -39,17 +39,18 @@ export default async function ({
   return server;
 
   async function initOracle() {
+    logger.debug(oracledb.thin ? 'Running in thin mode' : 'Running in thick mode');
     setOracleOptions();
 
     logger.log('debug', 'Establishing connection to database...');
-    logger.debug(`Oracle connectsting: ${oracleConnectString}`);
+    logger.debug(`Oracle connectstring: ${oracleConnectString}`);
 
     const pool = await oracledb.createPool({
       user: oracleUsername, password: oraclePassword,
       connectString: oracleConnectString
     });
 
-    await testConnection(pool);
+    testConnection(pool);
 
     logger.log('debug', 'Connected to database!');
     logger.debug(`Pool debug: `);
@@ -120,13 +121,10 @@ export default async function ({
     }
   }
 
-  async function testConnection(pool) {
-    const connection = await pool.getConnection();
-    const result = await connection.execute(`
-       SELECT z00_rec_key
-       FROM fin01.z00
-       WHERE z00_rec_key = '000000001'`);
-    logger.debug(result.rows);
+  function testConnection(pool) {
+    const connection = pool.getConnection();
+    logger.debug(connection.isHealthy());
+    connection.close();
   }
 
 }
