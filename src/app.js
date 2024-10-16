@@ -42,7 +42,7 @@ export default async function ({
     logger.debug(oracledb.thin ? 'Running in thin mode' : 'Running in thick mode');
     setOracleOptions();
 
-    logger.log('debug', 'Establishing connection to database...');
+    logger.debug('Establishing connection to database...');
     logger.debug(`Oracle connectstring: ${oracleConnectString}`);
 
     const pool = await oracledb.createPool({
@@ -52,7 +52,7 @@ export default async function ({
 
     testConnection(pool);
 
-    logger.log('debug', 'Connected to database!');
+    logger.debug('Connected to database!');
     logger.debug(`Pool debug: `);
 
     return pool;

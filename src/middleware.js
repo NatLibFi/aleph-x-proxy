@@ -43,7 +43,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
                          (/doc_num=0{9}/u).test(reqPayload) === false &&
                          (/rec_num= /u).test(reqPayload) === false;
 
-    logger.log('debug', req.isRecordUpdate
+    logger.debug(req.isRecordUpdate
       ? 'Request is record update.'
       : 'Request is not record update.');
 
@@ -63,9 +63,9 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
     async function handle() {
       const payload = await parseXML(resPayload);
-      logger.debug(`Got payload: ${JSON.stringify(resPayload)}`);
+      logger.silly(`Got payload: ${JSON.stringify(resPayload)}`);
       const id = getId();
-      logger.debug(`Got ID: ${id}`);
+      logger.silly(`Got ID: ${id}`);
 
       return id ? updateIndexing() : undefined;
 
@@ -81,19 +81,19 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
       async function updateIndexing() {
         // eslint-disable-next-line functional/no-let
         let connection;
-        logger.debug(`Update indexing.`);
+        logger.silly(`Update indexing.`);
 
         try {
           logger.log('info', `Updating indexing for record ${id}`);
           logger.debug(pool === undefined ? `pool is undefined` : `pool exists`);
           connection = await pool.getConnection();
-          logger.debug(`Did we get a connection?`);
+          logger.silly(`Did we get a connection?`);
 
           const query = `UPDATE ${alephLibrary}.z07 SET z07_sequence = :value WHERE z07_rec_key = :id`;
           const args = {id, value: generateSequence()};
-          logger.debug(`We got args: ${JSON.stringify(args)}`);
+          logger.silly(`We got args: ${JSON.stringify(args)}`);
 
-          logger.log('debug', `Executing query: '${query}' with args: ${JSON.stringify(args)}`);
+          logger.silly(`Executing query: '${query}' with args: ${JSON.stringify(args)}`);
 
           const {rowsAffected} = await connection.execute(query, args, {autoCommit: true});
 
@@ -117,7 +117,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   // eslint-disable-next-line require-await
   async function readPayload(msg) {
     return new Promise((resolve, reject) => {
-      logger.debug(`ReadPayload`);
+      logger.silly(`ReadPayload`);
       const buffer = [];
 
       msg
