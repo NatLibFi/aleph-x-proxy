@@ -14,9 +14,8 @@
  * limitations under the License.
 */
 
-import {Utils} from '@natlibfi/melinda-commons';
 
-const {readEnvironmentVariable} = Utils;
+import {readEnvironmentVariable} from '@natlibfi/melinda-backend-commons';
 
 export const alephLibrary = readEnvironmentVariable('ALEPH_LIBRARY');
 export const alephXServiceUrl = readEnvironmentVariable('ALEPH_X_SERVICE_URL');
