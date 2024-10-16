@@ -84,8 +84,8 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
         logger.silly(`Update indexing.`);
 
         try {
-          logger.log('info', `Updating indexing for record ${id}`);
-          logger.debug(pool === undefined ? `pool is undefined` : `pool exists`);
+          logger.info(`Updating indexing for record ${id}`);
+          logger.silly(pool === undefined ? `pool is undefined` : `pool exists`);
           connection = await pool.getConnection();
           logger.silly(`Did we get a connection?`);
 
@@ -97,7 +97,7 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
           const {rowsAffected} = await connection.execute(query, args, {autoCommit: true});
 
-          logger.log('info', rowsAffected
+          logger.info(rowsAffected
             ? `Indexing priority updated successfully for record ${id}`
             : `Record ${id} already indexed`);
         } finally {

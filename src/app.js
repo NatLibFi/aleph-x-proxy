@@ -53,7 +53,7 @@ export default async function ({
     testConnection(pool);
 
     logger.debug('Connected to database!');
-    logger.debug(`Pool debug: `);
+    //logger.debug(`Pool debug: `);
 
     return pool;
 
@@ -85,7 +85,7 @@ export default async function ({
 
     app.use(handleError);
 
-    return app.listen(httpPort, () => logger.log('info', 'Started Aleph X-proxy'));
+    return app.listen(httpPort, () => logger.info('Started Aleph X-proxy'));
 
     function formatMessage(req, res) {
       const newUrl = format();
