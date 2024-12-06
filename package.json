@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@natlibfi/melinda-backend-commons": "^2.3.5",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "http-proxy": "^1.18.1",
     "http-status": "^1.8.1",
     "into-stream": "^6.0.0",
