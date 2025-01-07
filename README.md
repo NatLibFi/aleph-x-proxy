@@ -6,6 +6,6 @@ Updates indexing priority for records already in queue when they are updated by 
 
 ## License and copyright
 
-Copyright (c) 2019, 2024 **University Of Helsinki (The National Library Of Finland)**
+Copyright (c) 2019, 2024-2025 **University Of Helsinki (The National Library Of Finland)**
 
 This project's source code is licensed under the terms of **Apache License 2.0** .
