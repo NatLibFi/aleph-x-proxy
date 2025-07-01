@@ -38,6 +38,7 @@
     "http-proxy": "^1.18.1",
     "http-status": "^2.1.0",
     "into-stream": "^6.0.0",
+    "ip-range-check": "^0.2.0",
     "moment": "^2.30.1",
     "oracledb": "^6.8.0",
     "xml2js": "^0.6.2"

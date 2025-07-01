@@ -20,11 +20,13 @@ import HttpStatus from 'http-status';
 import {createLogger, createExpressLogger} from '@natlibfi/melinda-backend-commons';
 import {URLSearchParams} from 'url';
 import createMiddleware from './middleware';
+import ipRangeCheck from 'ip-range-check';
 
 export default async function ({
   enableProxy, httpPort,
   alephLibrary, alephXServiceUrl, indexingPriority,
-  oracleUsername, oraclePassword, oracleConnectString
+  oracleUsername, oraclePassword, oracleConnectString,
+  ipWhiteList
 }) {
   const logger = createLogger();
 
@@ -81,6 +83,7 @@ export default async function ({
       msg: formatMessage
     }));
 
+    app.use(ipWhiteListMiddleware);
     app.use(createMiddleware({pool, alephLibrary, indexingPriority, alephXServiceUrl}));
 
     app.use(handleError);
@@ -100,6 +103,24 @@ export default async function ({
 
         return `${path}?${params.toString()}`;
       }
+    }
+
+    function ipWhiteListMiddleware(req, res, next) {
+      logger.verbose('Ip whitelist middleware');
+      if (ipWhiteList.length === 0) {
+        return next();
+      }
+      const connectionIp = req.headers['cf-connecting-ip'];
+      //logger.debug(connectionIp);
+      //const parsedConnectionIp = connectionIp.replace(/::ffff:/u, '');
+      //logger.debug(parsedConnectionIp);
+      if (ipRangeCheck(`${connectionIp}`, ipWhiteList)) {
+        logger.debug('IP ok');
+        return next();
+      }
+
+      logger.debug(`Bad IP: ${req.headers['cf-connecting-ip']}`);
+      return res.sendStatus(HttpStatus.FORBIDDEN);
     }
 
     // eslint-disable-next-line require-await

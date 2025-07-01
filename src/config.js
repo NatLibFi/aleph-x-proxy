@@ -28,3 +28,5 @@ export const enableProxy = readEnvironmentVariable('ENABLE_PROXY', {defaultValue
 export const oracleUsername = readEnvironmentVariable('ORACLE_USERNAME');
 export const oraclePassword = readEnvironmentVariable('ORACLE_PASSWORD');
 export const oracleConnectString = readEnvironmentVariable('ORACLE_CONNECT_STRING');
+
+export const ipWhiteList = readEnvironmentVariable('IP_WHITELIST', {defaultValue: [], format: v => JSON.parse(v)});
