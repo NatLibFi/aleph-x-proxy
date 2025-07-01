@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git@github.com:natlibfi/aleph-x-proxy.git"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "version": "2.1.0-alpha.2",
   "main": "./dist/index.js",
   "engines": {
