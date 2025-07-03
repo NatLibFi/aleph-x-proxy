@@ -14,7 +14,7 @@
     "url": "git@github.com:natlibfi/aleph-x-proxy.git"
   },
   "license": "MIT",
-  "version": "2.1.0-alpha.3",
+  "version": "2.1.0-alpha.4",
   "main": "./dist/index.js",
   "engines": {
     "node": ">=20"
