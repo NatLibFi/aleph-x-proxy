@@ -89,15 +89,14 @@ export default async function ({
       }
     }
 
+    // IP_WHITELIST defaults to empty, which is used for no restrictions
+    // Note that using IP_WHITELIST requires 'cf-connecting-ip' header in request, all requests without it are denied
     function ipWhiteListMiddleware(req, res, next) {
       logger.verbose('Ip whitelist middleware');
       if (ipWhiteList.length === 0) {
         return next();
       }
       const connectionIp = req.headers['cf-connecting-ip'];
-      //logger.debug(connectionIp);
-      //const parsedConnectionIp = connectionIp.replace(/::ffff:/u, '');
-      //logger.debug(parsedConnectionIp);
       if (ipRangeCheck(`${connectionIp}`, ipWhiteList)) {
         logger.debug('IP ok');
         return next();

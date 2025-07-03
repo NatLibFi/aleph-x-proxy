@@ -12,4 +12,6 @@ export const oracleUsername = readEnvironmentVariable('ORACLE_USERNAME');
 export const oraclePassword = readEnvironmentVariable('ORACLE_PASSWORD');
 export const oracleConnectString = readEnvironmentVariable('ORACLE_CONNECT_STRING');
 
+// IP_WHITELIST defaults to empty, which is used for no restrictions
+// Note that using IP_WHITELIST requires 'cf-connecting-ip' header in request, all requests without it are denied
 export const ipWhiteList = readEnvironmentVariable('IP_WHITELIST', {defaultValue: [], format: v => JSON.parse(v)});
