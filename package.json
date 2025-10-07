@@ -33,7 +33,7 @@
     "watch:dev": "cross-env DEBUG=1 nodemon --watch src --exec 'babel-node ./src/index.js'"
   },
   "dependencies": {
-    "@natlibfi/melinda-backend-commons": "^2.3.5",
+    "@natlibfi/melinda-backend-commons": "^2.3.9",
     "express": "^4.21.1",
     "http-proxy": "^1.18.1",
     "http-status": "^1.8.1",
