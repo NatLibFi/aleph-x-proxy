@@ -1,5 +1,5 @@
-import startApp from './app';
-import * as params from './config';
+import startApp from './app.js';
+import * as params from './config.js';
 
 run();
 

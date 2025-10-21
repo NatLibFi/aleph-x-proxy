@@ -3,7 +3,7 @@ import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
 import {createLogger, createExpressLogger} from '@natlibfi/melinda-backend-commons';
 import {URLSearchParams} from 'url';
-import createMiddleware from './middleware';
+import {default as createMiddleware} from './middleware.js';
 import ipRangeCheck from 'ip-range-check';
 
 export default async function ({

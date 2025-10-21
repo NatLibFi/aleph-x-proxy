@@ -1,7 +1,7 @@
 import HttpStatus from 'http-status';
 import stringToStream from 'into-stream';
 import {parseString as parseXMLOrig} from 'xml2js';
-import {createProxyServer} from 'http-proxy';
+import {createProxyServer} from 'http-proxy-3';
 import moment from 'moment';
 import {promisify} from 'util';
 import {createLogger} from '@natlibfi/melinda-backend-commons';
