@@ -4,11 +4,9 @@ import * as params from './config.js';
 run();
 
 async function run() {
-  // eslint-disable-next-line functional/no-let
   let server;
 
   registerInterruptionHandlers();
-  // eslint-disable-next-line prefer-const
   server = await startApp(params);
 
   function registerInterruptionHandlers() {
@@ -28,18 +26,15 @@ async function run() {
     }
 
     function handleTermination({code = 0, message}) {
-      // eslint-disable-next-line functional/no-conditional-statements
       if (server) {
         server.close();
       }
 
-      // eslint-disable-next-line functional/no-conditional-statements
       if (message) {
         // eslint-disable-next-line no-console
         console.error(message);
       }
 
-      // eslint-disable-next-line no-process-exit
       process.exit(code);
     }
   }

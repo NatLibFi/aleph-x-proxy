@@ -6,6 +6,7 @@ import moment from 'moment';
 import {promisify} from 'util';
 import {createLogger} from '@natlibfi/melinda-backend-commons';
 
+// eslint-disable-next-line max-lines-per-function
 export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   const INDEXING_SEQUENCE_FORMAT = 'YYYYMMDDHHmmssS';
 
@@ -19,7 +20,6 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
   return async (req, res) => {
     const reqPayload = await readPayload(req);
 
-    // eslint-disable-next-line functional/immutable-data, require-atomic-updates
     req.isRecordUpdate = ((/op=update_doc/u).test(reqPayload) || (/op=update-doc/u).test(reqPayload)) &&
     //  require op=update_doc or op=update-doc, but
     // ignore all zeroes or empty doc_number/doc_num/rec_num - these are creates!
@@ -63,7 +63,6 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
       }
 
       async function updateIndexing() {
-        // eslint-disable-next-line functional/no-let
         let connection;
         logger.silly(`Update indexing.`);
 
@@ -98,7 +97,6 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
     }
   }
 
-  // eslint-disable-next-line require-await
   async function readPayload(msg) {
     return new Promise((resolve, reject) => {
       logger.silly(`ReadPayload`);
@@ -106,7 +104,6 @@ export default ({pool, alephLibrary, alephXServiceUrl, indexingPriority}) => {
 
       msg
         .on('error', reject)
-        // eslint-disable-next-line functional/immutable-data
         .on('data', chunk => buffer.push(chunk))
         .on('end', () => resolve(buffer.join('')));
     });
