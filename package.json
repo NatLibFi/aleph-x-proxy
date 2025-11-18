@@ -33,7 +33,7 @@
   "dependencies": {
     "@natlibfi/melinda-backend-commons": "^3.0.0",
     "express": "^4.21.2",
-    "http-proxy-3": "^1.22.0",
+    "http-proxy-3": "^1.23.0",
     "http-status": "^2.1.0",
     "into-stream": "^6.0.0",
     "ip-range-check": "^0.2.0",
@@ -42,8 +42,8 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.25.12",
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
     "jsonpath": "^1.1.1"
   }
