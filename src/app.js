@@ -3,9 +3,10 @@ import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
 import {createLogger, createExpressLogger} from '@natlibfi/melinda-backend-commons';
 import {URLSearchParams} from 'url';
-import createMiddleware from './middleware';
+import {default as createMiddleware} from './middleware.js';
 import ipRangeCheck from 'ip-range-check';
 
+// eslint-disable-next-line max-lines-per-function
 export default async function ({
   enableProxy, httpPort,
   alephLibrary, alephXServiceUrl, indexingPriority,
@@ -44,13 +45,9 @@ export default async function ({
     return pool;
 
     function setOracleOptions() {
-      // eslint-disable-next-line functional/immutable-data
       oracledb.outFormat = oracledb.OBJECT;
-      // eslint-disable-next-line functional/immutable-data
       oracledb.poolTimeout = 20;
-      // eslint-disable-next-line functional/immutable-data
       oracledb.events = false;
-      // eslint-disable-next-line functional/immutable-data
       oracledb.poolPingInterval = 10;
     }
   }
@@ -58,7 +55,6 @@ export default async function ({
   function initExpress() {
     const app = express();
 
-    // eslint-disable-next-line functional/no-conditional-statements
     if (enableProxy) {
       app.enable('trust proxy', true);
     }
@@ -106,8 +102,8 @@ export default async function ({
       return res.sendStatus(HttpStatus.FORBIDDEN);
     }
 
-    // eslint-disable-next-line require-await
-    async function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
+     
+    async function handleError(err, req, res, next) {  
       const {
         INTERNAL_SERVER_ERROR,
         REQUEST_TIMEOUT
