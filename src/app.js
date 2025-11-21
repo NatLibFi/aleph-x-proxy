@@ -1,30 +1,17 @@
-/**
-* Copyright 2019 University Of Helsinki (The National Library Of Finland)
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 import express from 'express';
 import oracledb from 'oracledb';
 import HttpStatus from 'http-status';
 import {createLogger, createExpressLogger} from '@natlibfi/melinda-backend-commons';
 import {URLSearchParams} from 'url';
-import createMiddleware from './middleware';
+import {default as createMiddleware} from './middleware.js';
+import ipRangeCheck from 'ip-range-check';
 
+// eslint-disable-next-line max-lines-per-function
 export default async function ({
   enableProxy, httpPort,
   alephLibrary, alephXServiceUrl, indexingPriority,
-  oracleUsername, oraclePassword, oracleConnectString
+  oracleUsername, oraclePassword, oracleConnectString,
+  ipWhiteList
 }) {
   const logger = createLogger();
 
@@ -58,13 +45,9 @@ export default async function ({
     return pool;
 
     function setOracleOptions() {
-      // eslint-disable-next-line functional/immutable-data
       oracledb.outFormat = oracledb.OBJECT;
-      // eslint-disable-next-line functional/immutable-data
       oracledb.poolTimeout = 20;
-      // eslint-disable-next-line functional/immutable-data
       oracledb.events = false;
-      // eslint-disable-next-line functional/immutable-data
       oracledb.poolPingInterval = 10;
     }
   }
@@ -72,7 +55,6 @@ export default async function ({
   function initExpress() {
     const app = express();
 
-    // eslint-disable-next-line functional/no-conditional-statements
     if (enableProxy) {
       app.enable('trust proxy', true);
     }
@@ -81,6 +63,7 @@ export default async function ({
       msg: formatMessage
     }));
 
+    app.use(ipWhiteListMiddleware);
     app.use(createMiddleware({pool, alephLibrary, indexingPriority, alephXServiceUrl}));
 
     app.use(handleError);
@@ -102,8 +85,25 @@ export default async function ({
       }
     }
 
-    // eslint-disable-next-line require-await
-    async function handleError(err, req, res, next) { // eslint-disable-line no-unused-vars
+    // IP_WHITELIST defaults to empty, which is used for no restrictions
+    // Note that using IP_WHITELIST requires 'cf-connecting-ip' header in request, all requests without it are denied
+    function ipWhiteListMiddleware(req, res, next) {
+      logger.verbose('Ip whitelist middleware');
+      if (ipWhiteList.length === 0) {
+        return next();
+      }
+      const connectionIp = req.headers['cf-connecting-ip'];
+      if (ipRangeCheck(`${connectionIp}`, ipWhiteList)) {
+        logger.debug('IP ok');
+        return next();
+      }
+
+      logger.debug(`Bad IP: ${req.headers['cf-connecting-ip']}`);
+      return res.sendStatus(HttpStatus.FORBIDDEN);
+    }
+
+     
+    async function handleError(err, req, res, next) {  
       const {
         INTERNAL_SERVER_ERROR,
         REQUEST_TIMEOUT
